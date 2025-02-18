@@ -1,16 +1,33 @@
 "use client"
 
-
+import { useRouter } from "next/navigation"; // Import useRouter
 import { useState } from 'react';
 import { Mail, Lock, ArrowRight } from 'lucide-react';
+import ForgotPasswordModal from './sign_in_page/forgot_password_modal'; // Import the Modal component
 
 export default function Home() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
+  const router = useRouter(); // Initialize router
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle sign in logic here
+  };
+
+  const handleSignUp = (e) => {
+    router.push("/sign_up_page");
+    // Handle sign in logic here
+  };
+
+  const handleForgotPassword = () => {
+    setIsModalOpen(true); // Show the modal when "Forgot password?" is clicked
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false); // Close the modal
   };
 
   return (
@@ -62,9 +79,13 @@ export default function Home() {
               />
               <span className="text-sm text-gray-400">Remember me</span>
             </label>
-            <a href="#" className="text-sm text-orange-500 hover:text-orange-400">
-              Forgot password?
-            </a>
+            <button
+            type="button"
+            onClick={handleForgotPassword}
+            className="text-sm text-orange-500 hover:text-orange-400"
+          >
+            Forgot password?
+          </button>
           </div>
 
           <button 
@@ -77,12 +98,17 @@ export default function Home() {
 
           <div className="text-center text-sm text-gray-400">
             Don't have an account?{' '}
-            <a href="#" className="text-orange-500 hover:text-orange-400">
+            <button
+              onClick={handleSignUp}  // Button to trigger handleSignUp function
+              className="text-orange-500 hover:text-orange-400"
+            >
               Sign up
-            </a>
+            </button>
           </div>
         </form>
       </div>
+        {/* Render ForgotPasswordModal and pass control props */}
+        <ForgotPasswordModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
     </div>
   );
 }
