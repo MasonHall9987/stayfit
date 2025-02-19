@@ -14,7 +14,7 @@ export default function SignUp() {
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
 
 
-    const router = useRouter(); // Initialize router
+  const router = useRouter(); // Initialize router
   
 
   const handleSubmit = (e) => {

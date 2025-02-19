@@ -14,6 +14,7 @@ export default function Home() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    router.push("/profile-page");
     // Handle sign in logic here
   };
 
