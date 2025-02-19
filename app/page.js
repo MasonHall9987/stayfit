@@ -3,7 +3,8 @@
 import { useRouter } from "next/navigation"; // Import useRouter
 import { useState } from 'react';
 import { Mail, Lock, ArrowRight } from 'lucide-react';
-import ForgotPasswordModal from './sign_in_page/forgot_password_modal'; // Import the Modal component
+import ForgotPasswordModal from './sign-in-page/forgot-password-modal'; // Import the Modal component
+
 
 export default function Home() {
   const [email, setEmail] = useState('');
@@ -11,14 +12,13 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
   const router = useRouter(); // Initialize router
 
-
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle sign in logic here
   };
 
   const handleSignUp = (e) => {
-    router.push("/sign_up_page");
+    router.push("/sign-up-page");
     // Handle sign in logic here
   };
 
@@ -26,9 +26,6 @@ export default function Home() {
     setIsModalOpen(true); // Show the modal when "Forgot password?" is clicked
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false); // Close the modal
-  };
 
   return (
     <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4">

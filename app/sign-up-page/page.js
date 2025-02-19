@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Mail, Lock, User, ArrowRight } from 'lucide-react';
 import { useRouter } from "next/navigation"; // Import useRouter
+import TermsConditionsModal from './terms-conditions-modal';
 
 
 export default function SignUp() {
@@ -10,6 +11,8 @@ export default function SignUp() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [name, setName] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
+
 
     const router = useRouter(); // Initialize router
   
@@ -22,6 +25,10 @@ export default function SignUp() {
   const handleSignIn = (e) => {
     router.back();
     // Handle sign in logic here
+  };
+
+  const handleTermsConditions = () => {
+    setIsModalOpen(true); // Show the modal when "Forgot password?" is clicked
   };
 
   return (
@@ -106,9 +113,13 @@ export default function SignUp() {
             />
             <span className="text-sm text-gray-400">
               I agree to the{' '}
-              <a href="#" className="text-orange-500 hover:text-orange-400">
-                Terms and Conditions
-              </a>
+            <button
+            type="button"
+            onClick={handleTermsConditions}
+            className="text-sm text-orange-500 hover:text-orange-400"
+            >
+            Terms and Conditions
+            </button>
             </span>
           </div>
 
@@ -133,6 +144,8 @@ export default function SignUp() {
           </div>
         </form>
       </div>
+      <TermsConditionsModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
+
     </div>
   );
 }
