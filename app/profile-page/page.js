@@ -3,10 +3,17 @@
 import { useState } from 'react';
 import { useRouter } from "next/navigation"; // Import useRouter
 import { Dumbbell, Apple, User, Settings, LogOut, Edit } from 'lucide-react';
+import SettingsModal from './settings-modal';
+
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState('profile');
   const router = useRouter(); // Initialize router
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
+
+  const handleSettings = () => {
+    setIsModalOpen(true); // Show the modal when "Forgot password?" is clicked
+  };
 
   return (
     <div className="min-h-screen bg-black">
@@ -67,7 +74,7 @@ export default function ProfilePage() {
                   <p className="text-orange-500 mt-1">Premium Member</p>
                 </div>
               </div>
-              <button className="text-gray-400 hover:text-white">
+              <button onClick={handleSettings} className="text-gray-400 hover:text-white">
                 <Settings className="h-6 w-6" />
               </button>
             </div>
@@ -109,6 +116,7 @@ export default function ProfilePage() {
           </div>
         </div>
       </main>
+      <SettingsModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
     </div>
   );
 }

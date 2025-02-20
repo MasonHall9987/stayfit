@@ -3,10 +3,17 @@
 import { useState } from 'react';
 import { Dumbbell, Apple, User, PieChart, Plus, ChevronRight, Search, ArrowUpRight } from 'lucide-react';
 import { useRouter } from "next/navigation"; // Import useRouter
+import AddMealModal from './add-meal-modal';
+
 
 export default function NutritionPage() {
   const [activeTab, setActiveTab] = useState('nutrition');
   const router = useRouter(); // Initialize router
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
+
+  const handleAddMeal = () => {
+    setIsModalOpen(true); // Show the modal when "Forgot password?" is clicked
+  };
 
   const mealSuggestions = [
     { name: "High Protein Breakfast", calories: "450", protein: "35g", carbs: "40g", fats: "15g" },
@@ -58,7 +65,7 @@ export default function NutritionPage() {
               <h1 className="text-3xl font-bold text-white mb-2">Nutrition</h1>
               <p className="text-gray-400">Track your meals and meet your goals</p>
             </div>
-            <button className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors flex items-center space-x-2">
+            <button onClick={handleAddMeal} className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors flex items-center space-x-2">
               <Plus className="h-5 w-5" />
               <span>Add Meal</span>
             </button>
@@ -168,6 +175,7 @@ export default function NutritionPage() {
           </div>
         </div>
       </main>
+      <AddMealModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
     </div>
   );
 }

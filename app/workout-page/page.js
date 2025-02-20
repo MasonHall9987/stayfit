@@ -1,12 +1,19 @@
 "use client"
 
 import { useState } from 'react';
-import { Dumbbell, Apple, User, PlayCircle, Clock, Flame, ChevronRight, Filter } from 'lucide-react';
+import { Dumbbell, Apple, User, PlayCircle, Plus, Clock, Flame, ChevronRight, Filter } from 'lucide-react';
 import { useRouter } from "next/navigation"; // Import useRouter
+import AddWorkoutModal from './add-workout-modal';
+
 
 export default function WorkoutPage() {
   const [activeTab, setActiveTab] = useState('workouts');
   const router = useRouter(); // Initialize router
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
+
+  const handleAddWorkout = () => {
+    setIsModalOpen(true); // Show the modal when "Forgot password?" is clicked
+  };
 
   // Sample workout data
   const recommendedWorkouts = [
@@ -69,12 +76,13 @@ export default function WorkoutPage() {
             <div>
               <h1 className="text-3xl font-bold text-white mb-2">Workouts</h1>
               <p className="text-gray-400">Find your perfect workout routine</p>
-            </div>
-            <button className="flex items-center space-x-2 bg-gray-800 px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
-              <Filter className="h-5 w-5 text-gray-400" />
-              <span className="text-gray-300">Filter</span>
+              </div>
+            <button onClick={handleAddWorkout} className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors flex items-center space-x-2">
+              <Plus className="h-5 w-5" />
+              <span>Add Workout</span>
             </button>
           </div>
+
 
           {/* Workout Categories */}
           <div className="mb-8">
@@ -147,6 +155,7 @@ export default function WorkoutPage() {
           </div>
         </div>
       </main>
+      <AddWorkoutModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
     </div>
   );
 }
