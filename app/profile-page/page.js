@@ -101,7 +101,7 @@ export default function ProfilePage() {
                 <span className="text-gray-300">Subscription Details</span>
                 <Settings className="h-5 w-5 text-gray-400" />
               </button>
-              <button className="w-full flex items-center justify-between px-4 py-3 bg-gray-800 rounded-lg hover:bg-gray-700 text-red-400 transition-colors">
+              <button className="w-full flex items-center justify-between px-4 py-3 bg-gray-800 rounded-lg hover:bg-gray-700 text-red-400 transition-colors" onClick={() => router.push("/")}>
                 <span>Sign Out</span>
                 <LogOut className="h-5 w-5" />
               </button>
