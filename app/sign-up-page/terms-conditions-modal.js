@@ -6,13 +6,6 @@ import { Mail, X, ArrowRight } from 'lucide-react';
 export default function TermsConditionsModal({ isOpen, setIsOpen }) {
   const [email, setEmail] = useState('');
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle password reset logic here
-    console.log('Password reset requested for:', email);
-    setIsOpen(false); // Close the modal after the form is submitted
-  };
-
   const termsContent = `Welcome to StayFit Terms and Conditions
 
 1. Acceptance of Terms

@@ -3,8 +3,12 @@
 import { useState } from 'react';
 import { Mail, X, ArrowRight } from 'lucide-react';
 
-export default function AddWorkoutModal({ isOpen, setIsOpen }) {
+export default function PersonalModal({ isOpen, setIsOpen }) {
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setIsOpen(false); // Close the modal after the form is submitted
+  };
 
   return (
     <>
