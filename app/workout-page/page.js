@@ -4,15 +4,22 @@ import { useState } from 'react';
 import { Dumbbell, Apple, User, PlayCircle, Plus, Clock, Flame, ChevronRight, Filter } from 'lucide-react';
 import { useRouter } from "next/navigation"; // Import useRouter
 import AddWorkoutModal from './add-workout-modal';
+import ViewWorkoutModal from './view-workout-modal';
 
 
 export default function WorkoutPage() {
   const [activeTab, setActiveTab] = useState('workouts');
   const router = useRouter(); // Initialize router
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
+  const [isAddWorkoutModalOpen, setIsAddWorkoutModalOpen] = useState(false); // Modal visibility state
+  const [isViewWorkoutModalOpen, setIsViewWorkoutModalOpen] = useState(false); // Modal visibility state
+
 
   const handleAddWorkout = () => {
-    setIsModalOpen(true); // Show the modal when "Forgot password?" is clicked
+    setIsAddWorkoutModalOpen(true); // Show the modal when "Forgot password?" is clicked
+  };
+
+  const handleViewWorkout = () => {
+    setIsViewWorkoutModalOpen(true); // Show the modal when "Forgot password?" is clicked
   };
 
   // Sample workout data
@@ -31,6 +38,8 @@ export default function WorkoutPage() {
     "Recovery"
   ];
 
+  const recentWorkouts = [{title: "Upper Body Strength", date: "Yesterday", id: 0}];
+
   return (
     <div className="min-h-screen bg-black">
       {/* Navigation Bar */}
@@ -38,7 +47,6 @@ export default function WorkoutPage() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Logo */}
           <span className="text-2xl font-bold text-orange-500">StayFit</span>
-          
           {/* Navigation Items */}
           <div className="flex items-center space-x-8">
             <button 
@@ -82,8 +90,6 @@ export default function WorkoutPage() {
               <span>Add Workout</span>
             </button>
           </div>
-
-
           {/* Workout Categories */}
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-white mb-4">Categories</h2>
@@ -104,6 +110,7 @@ export default function WorkoutPage() {
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-white mb-4">Recommended For You</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            
               {recommendedWorkouts.map((workout, index) => (
                 <div key={index} className="bg-gray-900 rounded-lg overflow-hidden hover:bg-gray-800 transition-colors cursor-pointer group">
                   <div className="relative">
@@ -132,30 +139,33 @@ export default function WorkoutPage() {
               ))}
             </div>
           </div>
-
           {/* Recent Workouts */}
           <div>
             <h2 className="text-xl font-semibold text-white mb-4">Recent Workouts</h2>
             <div className="bg-gray-900 rounded-lg divide-y divide-gray-800">
-              {[...Array(3)].map((_, index) => (
-                <div key={index} className="p-4 flex items-center justify-between hover:bg-gray-800 transition-colors cursor-pointer">
+              {recentWorkouts.map((workout, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleViewWorkout()}
+                  className="w-full text-left p-4 flex items-center justify-between hover:bg-gray-800 transition-colors cursor-pointer">
                   <div className="flex items-center space-x-4">
                     <div className="bg-gray-800 p-3 rounded-lg">
                       <Dumbbell className="h-6 w-6 text-orange-500" />
                     </div>
                     <div>
-                      <h3 className="text-white font-medium">Upper Body Strength</h3>
-                      <p className="text-gray-400 text-sm">Completed yesterday</p>
+                      <h3 className="text-white font-medium">{workout.title}</h3>
+                      <p className="text-gray-400 text-sm">{workout.date}</p>
                     </div>
                   </div>
                   <ChevronRight className="h-5 w-5 text-gray-400" />
-                </div>
+                </button>
               ))}
             </div>
           </div>
         </div>
       </main>
-      <AddWorkoutModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
+      <AddWorkoutModal isOpen={isAddWorkoutModalOpen} setIsOpen={setIsAddWorkoutModalOpen} />
+      <ViewWorkoutModal isOpen={isViewWorkoutModalOpen} setIsOpen={setIsViewWorkoutModalOpen} />
     </div>
   );
 }
