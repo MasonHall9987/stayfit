@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { X, ArrowRight, Clock, Calendar, Dumbbell, Timer, CheckCircle, Edit, Trash2 } from 'lucide-react';
 
-export default function ViewWorkoutModal({ isOpen, setIsOpen, workoutData, exercises }) {
+export default function ViewWorkoutModal({ isOpen, setIsOpen, workoutData, exercises, isStatic}) {
  // Add state for edit mode
   const [editMode, setEditMode] = useState(false);
   
@@ -138,13 +138,13 @@ export default function ViewWorkoutModal({ isOpen, setIsOpen, workoutData, exerc
                     <Trash2 className="h-4 w-4" />
                   </button>
                 )}
-                <button
+                {!isStatic && (<button
                   onClick={toggleEditMode}
                   className={`${editMode ? 'bg-gray-600' : 'bg-orange-500 hover:bg-orange-600'} text-white py-2 px-4 rounded-lg transition-colors flex items-center space-x-2`}
                 >
                   <Edit className="h-4 w-4" />
                   <span>Edit Workout</span>
-                </button>
+                </button>)}
               </div>
             </div>
           </div>
