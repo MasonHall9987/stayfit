@@ -4,15 +4,30 @@ import { useState } from 'react';
 import { Dumbbell, Apple, User, PieChart, Plus, ChevronRight, Search, ArrowUpRight } from 'lucide-react';
 import { useRouter } from "next/navigation"; // Import useRouter
 import AddMealModal from './add-meal-modal';
+import ViewMealModal from './view-meal-modal';
+
 
 
 export default function NutritionPage() {
   const [activeTab, setActiveTab] = useState('nutrition');
   const router = useRouter(); // Initialize router
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
+  const [isAddMealModalOpen, setIsAddMealModalOpen] = useState(false); // Modal visibility state
+  const [isViewMealModalOpen, setIsViewMealModalOpen] = useState(false); // Modal visibility state
+  const [isStatic, setIsStatic] = useState(false);
+
 
   const handleAddMeal = () => {
-    setIsModalOpen(true); // Show the modal when "Forgot password?" is clicked
+    setIsAddMealModalOpen(true);
+  };
+
+  const handleViewMeal = () => {
+    setIsStatic(true);
+    setIsViewMealModalOpen(true); 
+  };
+
+  const handleTodayViewMeal = () => {
+    setIsStatic(false);
+    setIsViewMealModalOpen(true); 
   };
 
   const mealSuggestions = [
@@ -73,19 +88,21 @@ export default function NutritionPage() {
 
           {/* Daily Summary */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            <div className="bg-gray-900 rounded-lg p-4">
+          <div className="bg-gray-900 rounded-lg p-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-gray-400">Calories</span>
-                <PieChart className="h-5 w-5 text-orange-500" />
+                <div className="h-2 w-24 bg-gray-800 rounded-full overflow-hidden">
+                  <div className="h-full w-[90%] bg-orange-500"></div>
+                </div>
               </div>
-              <div className="text-2xl font-bold text-white">1,840</div>
-              <div className="text-sm text-gray-400">of 2,200 goal</div>
+              <div className="text-2xl font-bold text-white">1820</div>
+              <div className="text-sm text-gray-400">of 2235 goal</div>
             </div>
             <div className="bg-gray-900 rounded-lg p-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-gray-400">Protein</span>
                 <div className="h-2 w-24 bg-gray-800 rounded-full overflow-hidden">
-                  <div className="h-full w-3/4 bg-orange-500"></div>
+                  <div className="h-full w-[75%] bg-orange-500"></div>
                 </div>
               </div>
               <div className="text-2xl font-bold text-white">120g</div>
@@ -95,7 +112,7 @@ export default function NutritionPage() {
               <div className="flex items-center justify-between mb-2">
                 <span className="text-gray-400">Carbs</span>
                 <div className="h-2 w-24 bg-gray-800 rounded-full overflow-hidden">
-                  <div className="h-full w-1/2 bg-orange-500"></div>
+                  <div className="h-full w-[50%] bg-orange-500"></div>
                 </div>
               </div>
               <div className="text-2xl font-bold text-white">180g</div>
@@ -105,7 +122,7 @@ export default function NutritionPage() {
               <div className="flex items-center justify-between mb-2">
                 <span className="text-gray-400">Fats</span>
                 <div className="h-2 w-24 bg-gray-800 rounded-full overflow-hidden">
-                  <div className="h-full w-2/3 bg-orange-500"></div>
+                  <div className="h-full w-[66%] bg-orange-500"></div>
                 </div>
               </div>
               <div className="text-2xl font-bold text-white">65g</div>
@@ -128,7 +145,7 @@ export default function NutritionPage() {
             <h2 className="text-xl font-semibold text-white mb-4">Suggested Meals</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {mealSuggestions.map((meal, index) => (
-                <div key={index} className="bg-gray-900 rounded-lg p-4 hover:bg-gray-800 transition-colors cursor-pointer group">
+                <button onClick={handleViewMeal} key={index} className="bg-gray-900 rounded-lg p-4 hover:bg-gray-800 transition-colors cursor-pointer group">
                   <div className="flex justify-between items-start mb-3">
                     <h3 className="text-lg font-medium text-white">{meal.name}</h3>
                     <ArrowUpRight className="h-5 w-5 text-orange-500 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -151,7 +168,7 @@ export default function NutritionPage() {
                       <span className="text-white">{meal.fats}</span>
                     </div>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </div>
@@ -161,7 +178,7 @@ export default function NutritionPage() {
             <h2 className="text-xl font-semibold text-white mb-4">Today's Meals</h2>
             <div className="bg-gray-900 rounded-lg divide-y divide-gray-800">
               {['Breakfast', 'Lunch', 'Snack', 'Dinner'].map((meal, index) => (
-                <div key={index} className="p-4 hover:bg-gray-800 transition-colors cursor-pointer">
+                <div onClick={handleTodayViewMeal} key={index} className="p-4 hover:bg-gray-800 transition-colors cursor-pointer rounded-lg">
                   <div className="flex items-center justify-between">
                     <div>
                       <h3 className="text-white font-medium">{meal}</h3>
@@ -175,7 +192,8 @@ export default function NutritionPage() {
           </div>
         </div>
       </main>
-      <AddMealModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
+      <AddMealModal isOpen={isAddMealModalOpen} setIsOpen={setIsAddMealModalOpen} />
+      <ViewMealModal isOpen={isViewMealModalOpen} setIsOpen={setIsViewMealModalOpen} isStatic={isStatic} />
     </div>
   );
 }
