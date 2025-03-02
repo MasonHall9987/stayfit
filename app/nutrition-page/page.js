@@ -130,7 +130,7 @@ export default function NutritionPage() {
             </div>
           </div>
 
-          {/* Search Bar */}
+          {/* Search Bar 
           <div className="relative mb-8">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
             <input 
@@ -138,7 +138,7 @@ export default function NutritionPage() {
               placeholder="Search for foods..." 
               className="w-full bg-gray-900 border border-gray-800 rounded-lg py-3 pl-10 pr-4 text-white placeholder:text-gray-400 focus:outline-none focus:border-orange-500"
             />
-          </div>
+          </div>*/}
 
           {/* Meal Suggestions */}
           <div className="mb-8">

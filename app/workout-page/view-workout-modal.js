@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { X, ArrowRight, Clock, Calendar, Dumbbell, Timer, CheckCircle, Edit, Trash2 } from 'lucide-react';
+import { X, ArrowRight, Clock, Calendar, Dumbbell, Timer, CheckCircle, Edit, Trash2, Save} from 'lucide-react';
 
 export default function ViewWorkoutModal({ isOpen, setIsOpen, workoutData, exercises, isStatic}) {
  // Add state for edit mode
@@ -122,32 +122,60 @@ export default function ViewWorkoutModal({ isOpen, setIsOpen, workoutData, exerc
             </div>
 
             {/* Footer */}
-            <div className="p-6 border-t border-gray-800 flex justify-between">
+            <div className="p-4 border-t border-gray-800 sticky bottom-0 bg-gray-900">
+          {editMode ? (
+            // Edit mode buttons
+            <div className="flex space-x-3">
               <button
-                onClick={() => handleClose()}
-                className="bg-gray-700 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition-colors"
+                onClick={toggleEditMode}
+                className="flex-1 py-2 border border-gray-700 rounded-lg text-white font-medium hover:bg-gray-800 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={toggleEditMode}
+                className="flex-1 py-2 bg-green-600 rounded-lg text-white font-medium hover:bg-green-700 transition-colors flex items-center justify-center"
+              >
+                <Save className="w-4 h-4 mr-2" />
+                Save Changes
+              </button>
+            </div>
+          ) : (
+            // View mode buttons
+            <div className="flex space-x-3">
+              <button
+                onClick={handleClose}
+                className="flex-1 py-2 border border-gray-700 rounded-lg text-white font-medium hover:bg-gray-800 transition-colors"
               >
                 Close
               </button>
-             
-              <div className="flex items-center space-x-2">
-                {editMode && (
+              
+              {isStatic ? (
+                <button
+                  className="flex-1 py-2 bg-orange-500 rounded-lg text-white font-medium hover:bg-orange-600 transition-colors"
+                >
+                  Add to Today
+                </button>
+              ) : (
+                <>
+                  <button
+                    onClick={toggleEditMode}
+                    className="flex-1 py-2 bg-orange-500 rounded-lg text-white font-medium hover:bg-orange-600 transition-colors flex items-center justify-center"
+                  >
+                    <Edit className="w-4 h-4 mr-2" />
+                    Edit Workout
+                  </button>
                   <button
                     onClick={handleDeleteWorkout}
-                    className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-colors flex items-center"
+                    className="py-2 px-4 bg-red-600 rounded-lg text-white font-medium hover:bg-red-700 transition-colors flex items-center justify-center"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="w-4 h-4" />
                   </button>
-                )}
-                {!isStatic && (<button
-                  onClick={toggleEditMode}
-                  className={`${editMode ? 'bg-gray-600' : 'bg-orange-500 hover:bg-orange-600'} text-white py-2 px-4 rounded-lg transition-colors flex items-center space-x-2`}
-                >
-                  <Edit className="h-4 w-4" />
-                  <span>Edit Workout</span>
-                </button>)}
-              </div>
+                </>
+              )}
             </div>
+          )}
+        </div>
           </div>
         </div>
       )}
