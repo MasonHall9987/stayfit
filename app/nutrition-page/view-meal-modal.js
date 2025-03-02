@@ -10,14 +10,10 @@ export default function ViewMealModal({ isOpen, setIsOpen, meal, isStatic, onSav
   // Default meal data in case no meal is passed
   const defaultMeal = {
     name: "High Protein Breakfast",
-    image: "/api/placeholder/600/300",
     calories: "450",
     protein: "35g",
     carbs: "40g",
     fats: "15g",
-    prepTime: "15 mins",
-    cookTime: "10 mins",
-    servings: "2",
     ingredients: [
       "4 large eggs",
       "1/2 cup Greek yogurt",
@@ -27,15 +23,6 @@ export default function ViewMealModal({ isOpen, setIsOpen, meal, isStatic, onSav
       "1 cup spinach",
       "2 slices whole grain bread",
       "Salt and pepper to taste"
-    ],
-    instructions: [
-      "Beat eggs in a bowl and season with salt and pepper.",
-      "Heat olive oil in a pan over medium heat.",
-      "Add spinach and cook until wilted, about 1 minute.",
-      "Pour in eggs and cook until set but still moist, stirring occasionally.",
-      "While eggs cook, toast the bread slices.",
-      "Mash avocado and spread on toast.",
-      "Serve eggs with avocado toast and a side of Greek yogurt mixed with oats."
     ],
     nutritionFacts: {
       saturatedFat: "5g",
@@ -58,7 +45,6 @@ export default function ViewMealModal({ isOpen, setIsOpen, meal, isStatic, onSav
   
   // New state for ingredient and instruction management
   const [newIngredient, setNewIngredient] = useState("");
-  const [newInstruction, setNewInstruction] = useState("");
 
   if (!isOpen) return null;
 
@@ -136,25 +122,6 @@ export default function ViewMealModal({ isOpen, setIsOpen, meal, isStatic, onSav
     });
   };
 
-  // Functions to manage instructions
-  const addInstruction = () => {
-    if (newInstruction.trim()) {
-      setEditedMeal({
-        ...editedMeal,
-        instructions: [...editedMeal.instructions, newInstruction.trim()]
-      });
-      setNewInstruction("");
-    }
-  };
-
-  const removeInstruction = (index) => {
-    const updatedInstructions = [...editedMeal.instructions];
-    updatedInstructions.splice(index, 1);
-    setEditedMeal({
-      ...editedMeal,
-      instructions: updatedInstructions
-    });
-  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -182,7 +149,7 @@ export default function ViewMealModal({ isOpen, setIsOpen, meal, isStatic, onSav
         
         {/* Nutritional summary */}
         <div className="p-4 border-b border-gray-800">
-          <div className="grid grid-cols-4 gap-4 mb-4">
+          <div className="grid grid-cols-4 gap-4 mb-1">
             <div className="text-center">
               <div className="text-gray-400 text-sm mb-1">Calories</div>
               {isEditMode ? (
@@ -240,54 +207,6 @@ export default function ViewMealModal({ isOpen, setIsOpen, meal, isStatic, onSav
               )}
             </div>
           </div>
-          
-          <div className="flex justify-between items-center text-sm text-gray-400">
-            <div className="flex items-center">
-              <Clock className="w-4 h-4 mr-1" />
-              {isEditMode ? (
-                <input 
-                  type="text" 
-                  name="prepTime" 
-                  value={editedMeal.prepTime} 
-                  onChange={handleInputChange}
-                  className="text-white bg-gray-800 border border-gray-700 rounded px-2 py-1 w-24"
-                  placeholder="Prep time"
-                />
-              ) : (
-                <span>Prep: {mealData.prepTime}</span>
-              )}
-            </div>
-            <div className="flex items-center">
-              <Utensils className="w-4 h-4 mr-1" />
-              {isEditMode ? (
-                <input 
-                  type="text" 
-                  name="cookTime" 
-                  value={editedMeal.cookTime} 
-                  onChange={handleInputChange}
-                  className="text-white bg-gray-800 border border-gray-700 rounded px-2 py-1 w-24"
-                  placeholder="Cook time"
-                />
-              ) : (
-                <span>Cook: {mealData.cookTime}</span>
-              )}
-            </div>
-            <div className="flex items-center">
-              <Apple className="w-4 h-4 mr-1" />
-              {isEditMode ? (
-                <input 
-                  type="text" 
-                  name="servings" 
-                  value={editedMeal.servings} 
-                  onChange={handleInputChange}
-                  className="text-white bg-gray-800 border border-gray-700 rounded px-2 py-1 w-24"
-                  placeholder="Servings"
-                />
-              ) : (
-                <span>Servings: {mealData.servings}</span>
-              )}
-            </div>
-          </div>
         </div>
         
         {/* Ingredients */}
@@ -338,82 +257,6 @@ export default function ViewMealModal({ isOpen, setIsOpen, meal, isStatic, onSav
           )}
         </div>
         
-        {/* Instructions */}
-        <div className="p-4 border-b border-gray-800">
-          <h3 className="text-lg font-semibold text-white mb-3">Instructions</h3>
-          {isEditMode ? (
-            <>
-              <ol className="space-y-3 mb-4">
-                {editedMeal.instructions.map((step, index) => (
-                  <li key={index} className="text-gray-300">
-                    <div className="flex">
-                      <span className="bg-orange-500 text-white w-6 h-6 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                        {index + 1}
-                      </span>
-                      <span className="flex-grow">{step}</span>
-                      <button 
-                        onClick={() => removeInstruction(index)}
-                        className="text-red-500 hover:text-red-400 ml-2"
-                      >
-                        <XCircle className="w-5 h-5" />
-                      </button>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-              <div className="flex mt-2">
-                <input
-                  type="text"
-                  value={newInstruction}
-                  onChange={e => setNewInstruction(e.target.value)}
-                  placeholder="Add new instruction step"
-                  className="flex-grow bg-gray-800 border border-gray-700 rounded-l px-3 py-2 text-white"
-                  onKeyPress={e => e.key === 'Enter' && addInstruction()}
-                />
-                <button
-                  onClick={addInstruction}
-                  className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-2 rounded-r"
-                >
-                  Add
-                </button>
-              </div>
-            </>
-          ) : (
-            <>
-              <ol className="space-y-3">
-                {mealData.instructions.slice(0, showFullRecipe ? mealData.instructions.length : 3).map((step, index) => (
-                  <li key={index} className="text-gray-300">
-                    <div className="flex">
-                      <span className="bg-orange-500 text-white w-6 h-6 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                        {index + 1}
-                      </span>
-                      <span>{step}</span>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-              
-              {mealData.instructions.length > 3 && (
-                <button 
-                  onClick={() => setShowFullRecipe(!showFullRecipe)}
-                  className="text-orange-500 mt-4 flex items-center hover:text-orange-400 transition-colors"
-                >
-                  {showFullRecipe ? (
-                    <>
-                      <ChevronUp className="w-4 h-4 mr-1" />
-                      Show less
-                    </>
-                  ) : (
-                    <>
-                      <ChevronDown className="w-4 h-4 mr-1" />
-                      Show full recipe
-                    </>
-                  )}
-                </button>
-              )}
-            </>
-          )}
-        </div>
         
         {/* Detailed nutrition facts */}
         <div className="p-4">
