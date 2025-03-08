@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { Mail, Lock, User, ArrowRight } from 'lucide-react';
 import { useRouter } from "next/navigation"; // Import useRouter
 import TermsConditionsModal from './terms-conditions-modal';
-
+import { useAuth } from '../contexts/authContext';
+import { doCreateUserWithEmailAndPassword } from '../firebase/auth';
 
 export default function SignUp() {
   const [email, setEmail] = useState('');
@@ -12,16 +13,34 @@ export default function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [name, setName] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
-
+  const [isRegistering, setIsRegistering] = useState(false);
 
   const router = useRouter(); // Initialize router
   
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle sign up logic here
+  
+    if (isRegistering) return; // Prevent multiple clicks
+  
+    if (password !== confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+  
+    setIsRegistering(true);
+  
+    try {
+      await doCreateUserWithEmailAndPassword(email, password);
+      alert("Account created successfully!");
+      router.push("/profile-page"); // Change "/home" to the correct path in your app
+    } catch (error) {
+      alert(error.message); // Display error to user
+    } finally {
+      setIsRegistering(false);
+    }
   };
-
+  
   const handleSignIn = (e) => {
     router.back();
     // Handle sign in logic here

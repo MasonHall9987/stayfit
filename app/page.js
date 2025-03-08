@@ -1,42 +1,52 @@
-"use client"
+"use client";
 
-import { useRouter } from "next/navigation"; // Import useRouter
-import { useState } from 'react';
-import { Mail, Lock, ArrowRight } from 'lucide-react';
-import ForgotPasswordModal from './sign-in-page/forgot-password-modal'; // Import the Modal component
-
+import { useRouter } from "next/navigation"; 
+import { useState } from "react";
+import { Mail, Lock, ArrowRight } from "lucide-react";
+import ForgotPasswordModal from "./sign-in-page/forgot-password-modal"; 
+import { doSignInWithEmailAndPassword } from "./firebase/auth";
+import { useAuth } from "./contexts/authContext";
 
 export default function Home() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
-  const router = useRouter(); // Initialize router
+  const auth = useAuth(); // Fetch auth context
+  const userLoggedIn = auth?.userLoggedIn || false; // Prevent crash if undefined
+  const [isSigningIn, setIsSigningIn] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const router = useRouter();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    router.push("/profile-page");
-    // Handle sign in logic here
+    if (isSigningIn) return; // Prevent multiple clicks
+    setIsSigningIn(true);
+
+    try {
+      await doSignInWithEmailAndPassword(email, password);
+      alert("Signed in successfully!");
+      router.push("/profile-page"); // Redirect after successful login
+    } catch (error) {
+      alert(error.message); // Display error
+    } finally {
+      setIsSigningIn(false);
+    }
   };
 
-  const handleSignUp = (e) => {
+  const handleSignUp = () => {
     router.push("/sign-up-page");
-    // Handle sign in logic here
   };
 
   const handleForgotPassword = () => {
-    setIsModalOpen(true); // Show the modal when "Forgot password?" is clicked
+    setIsModalOpen(true);
   };
-
 
   return (
     <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4">
-      {/* Logo and Title */}
       <div className="mb-8 text-center">
         <h1 className="text-4xl font-bold text-orange-500 mb-2">StayFit</h1>
         <p className="text-gray-400">Welcome back! Please sign in to continue.</p>
       </div>
 
-      {/* Sign In Card */}
       <div className="w-full max-w-md bg-gray-900 border border-gray-800 rounded-lg p-6">
         <h2 className="text-2xl text-white mb-6">Sign In</h2>
         
@@ -78,12 +88,12 @@ export default function Home() {
               <span className="text-sm text-gray-400">Remember me</span>
             </label>
             <button
-            type="button"
-            onClick={handleForgotPassword}
-            className="text-sm text-orange-500 hover:text-orange-400"
-          >
-            Forgot password?
-          </button>
+              type="button"
+              onClick={handleForgotPassword}
+              className="text-sm text-orange-500 hover:text-orange-400"
+            >
+              Forgot password?
+            </button>
           </div>
 
           <button 
@@ -95,9 +105,9 @@ export default function Home() {
           </button>
 
           <div className="text-center text-sm text-gray-400">
-            Don't have an account?{' '}
+            Don't have an account?{" "}
             <button
-              onClick={handleSignUp}  // Button to trigger handleSignUp function
+              onClick={handleSignUp}
               className="text-orange-500 hover:text-orange-400"
             >
               Sign up
@@ -105,8 +115,8 @@ export default function Home() {
           </div>
         </form>
       </div>
-        {/* Render ForgotPasswordModal and pass control props */}
-        <ForgotPasswordModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
+
+      <ForgotPasswordModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
     </div>
   );
 }
