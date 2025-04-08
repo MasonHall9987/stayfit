@@ -1,4 +1,6 @@
 "use client";
+import { doc, updateDoc, deleteDoc } from "firebase/firestore";
+import { db } from '../firebase/firebase'; // adjust the path if needed
 
 import { useState } from 'react';
 import { X, Clock, Utensils, Apple, ChevronDown, ChevronUp, Edit, Trash2, Save, XCircle } from 'lucide-react';
