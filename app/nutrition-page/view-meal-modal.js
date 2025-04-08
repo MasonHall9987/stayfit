@@ -1,7 +1,7 @@
 "use client";
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from '../firebase/firebase'; // adjust the path if needed
-
+import { auth } from "../firebase/firebase";
 import { useState } from 'react';
 import { X, Clock, Utensils, Apple, ChevronDown, ChevronUp, Edit, Trash2, Save, XCircle } from 'lucide-react';
 
@@ -55,17 +55,34 @@ export default function ViewMealModal({ isOpen, setIsOpen, meal, isStatic, onSav
     setEditedMeal({...mealData});
   };
 
-  const handleSaveMeal = () => {
-    // Call the onSave prop with the updated meal data
-    if (onSave) {
-      onSave(editedMeal);
+
+  const handleSaveMeal = async () => {
+    if (!editedMeal.id) {
+      console.error("Meal ID is missing. Cannot update Firestore.");
+      return;
     }
-    
-    // Exit edit mode
-    setIsEditMode(false);
-    
-    console.log("Saved meal:", editedMeal);
+  
+    try {
+      const user = auth.currentUser;
+      const mealDocRef = doc(db, "users", user.uid, "meals", editedMeal.id);
+  
+      const mealToUpdate = { ...editedMeal };
+      delete mealToUpdate.id; // Firestore doesn't like `id` field when updating
+  
+      await updateDoc(mealDocRef, mealToUpdate);
+  
+      if (onSave) {
+        onSave(editedMeal); // this updates the UI state in the parent
+      }
+      setIsEditMode(false);
+      setIsOpen(false); // <-- ADD THIS TO CLOSE THE MODAL AFTER SAVING
+    } catch (error) {
+      console.error("Failed to update meal:", error);
+    }
   };
+  
+  
+  
 
   const handleCancelEdit = () => {
     // Reset edited meal and exit edit mode
