@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useState, useEffect } from 'react';
 import { Dumbbell, Apple, User, Plus, ChevronRight } from 'lucide-react';
@@ -7,64 +7,60 @@ import { getMealsForUser } from './mealService';
 import AddMealModal from './add-meal-modal';
 import ViewMealModal from './view-meal-modal';
 
+
 export default function NutritionPage() {
   const [activeTab, setActiveTab] = useState('nutrition');
-  const router = useRouter(); // Initialize router
-  const [isAddMealModalOpen, setIsAddMealModalOpen] = useState(false); // Modal visibility state
-  const [isViewMealModalOpen, setIsViewMealModalOpen] = useState(false); // Modal visibility state
-  const [isStatic, setIsStatic] = useState(false);
-  const [meals, setMeals] = useState([]); // State to hold the fetched meals data
+  const router = useRouter();
+  const [isAddMealModalOpen, setIsAddMealModalOpen] = useState(false);
+  const [isViewMealModalOpen, setIsViewMealModalOpen] = useState(false);
+  const [isStatic, setIsStatic] = useState(false); // Controls static vs dynamic view in modal
+  const [meals, setMeals] = useState([]);
+  const [selectedMeal, setSelectedMeal] = useState(null); // New state for selected meal
 
-  // Fetch meals for the authenticated user
   useEffect(() => {
     async function fetchMeals() {
       try {
-        const mealsData = await getMealsForUser(); // Call the service to get meals
-        setMeals(mealsData); // Update the state with fetched meals
+        const mealsData = await getMealsForUser();
+        setMeals(mealsData);
       } catch (error) {
         console.error('Error fetching meals:', error);
       }
     }
 
-    fetchMeals(); // Run fetchMeals function on component mount
-  }, []); // Empty dependency array to run once on mount
+    fetchMeals();
+  }, []);
 
   const handleAddMeal = () => {
     setIsAddMealModalOpen(true);
   };
 
-  const handleViewMeal = () => {
-    setIsStatic(true);
-    setIsViewMealModalOpen(true);
-  };
-
-  const handleTodayViewMeal = () => {
-    setIsStatic(false);
-    setIsViewMealModalOpen(true);
+  const handleTodayViewMeal = (meal) => {
+    setSelectedMeal(meal); // Set the selected meal
+    setIsStatic(false); // Non-static view (meaning the user can edit the meal)
+    setIsViewMealModalOpen(true); // Open the ViewMealModal
   };
 
   return (
     <div className="min-h-screen bg-black">
-      {/* Navigation Bar */}
       <nav className="bg-gray-900 border-b border-gray-800 px-4 py-3 fixed top-0 w-full z-10">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <span className="text-2xl font-bold text-orange-500">StayFit</span>
           <div className="flex items-center space-x-8">
-            <button 
+            <button
               onClick={() => router.push("/workout-page")}
               className={`flex flex-col items-center ${activeTab === 'workouts' ? 'text-orange-500' : 'text-gray-400'} hover:text-orange-500 transition-colors`}
             >
               <Dumbbell className="h-6 w-6 mb-1" />
               <span className="text-sm">Workouts</span>
             </button>
-            <button 
+            <button
               onClick={() => setActiveTab('nutrition')}
               className={`flex flex-col items-center ${activeTab === 'nutrition' ? 'text-orange-500' : 'text-gray-400'} hover:text-orange-500 transition-colors`}
             >
               <Apple className="h-6 w-6 mb-1" />
               <span className="text-sm">Nutrition</span>
             </button>
-            <button 
+            <button
               onClick={() => router.push("/profile-page")}
               className={`flex flex-col items-center ${activeTab === 'profile' ? 'text-orange-500' : 'text-gray-400'} hover:text-orange-500 transition-colors`}
             >
@@ -75,10 +71,8 @@ export default function NutritionPage() {
         </div>
       </nav>
 
-      {/* Main Content */}
       <main className="pt-24 px-4 pb-8">
         <div className="max-w-6xl mx-auto">
-          {/* Header Section */}
           <div className="flex justify-between items-center mb-8">
             <div>
               <h1 className="text-3xl font-bold text-white mb-2">Nutrition</h1>
@@ -90,13 +84,16 @@ export default function NutritionPage() {
             </button>
           </div>
 
-          {/* Today's Meals */}
           <div>
             <h2 className="text-xl font-semibold text-white mb-4">Today's Meals</h2>
             <div className="bg-gray-900 rounded-lg divide-y divide-gray-800">
               {meals.length > 0 ? (
-                meals.map((meal, index) => (
-                  <div key={meal.id} onClick={handleTodayViewMeal} className="p-4 hover:bg-gray-800 transition-colors cursor-pointer rounded-lg">
+                meals.map((meal) => (
+                  <div
+                    key={meal.id}
+                    onClick={() => handleTodayViewMeal(meal)} // Correctly handle the click to view the meal
+                    className="p-4 hover:bg-gray-800 transition-colors cursor-pointer rounded-lg"
+                  >
                     <div className="flex items-center justify-between">
                       <div>
                         <h3 className="text-white font-medium">{meal.name}</h3>
@@ -113,8 +110,15 @@ export default function NutritionPage() {
           </div>
         </div>
       </main>
+
       <AddMealModal isOpen={isAddMealModalOpen} setIsOpen={setIsAddMealModalOpen} />
-      <ViewMealModal isOpen={isViewMealModalOpen} setIsOpen={setIsViewMealModalOpen} isStatic={isStatic} />
+      <ViewMealModal
+        isOpen={isViewMealModalOpen}
+        setIsOpen={setIsViewMealModalOpen}
+        isStatic={isStatic} // Ensure the static view is passed correctly
+        meal={selectedMeal} // Pass the selected meal to the modal
+      />
     </div>
   );
 }
+

@@ -73,37 +73,46 @@ export default function ViewMealModal({ isOpen, setIsOpen, meal, isStatic, onSav
     setIsEditMode(false);
   };
 
-  const handleDeleteMeal = () => {
+  const handleDeleteMeal = async () => {
     // Add your delete meal functionality here
     console.log("Delete meal:", mealData);
     if (confirm("Are you sure you want to delete this meal?")) {
-      // Delete logic here
-      setIsOpen(false);
+      try {
+        // Assuming the meal object has an ID field
+        const mealDocRef = doc(db, "meals", meal.id);
+        await deleteDoc(mealDocRef); // Delete from Firestore
+
+        // Close the modal after deletion
+        setIsOpen(false);
+        console.log("Meal deleted successfully");
+      } catch (error) {
+        console.error("Error deleting meal:", error);
+      }
     }
   };
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    
+  
     if (name.includes('.')) {
-      // Handle nested properties like nutritionFacts.saturatedFat
       const [parent, child] = name.split('.');
-      setEditedMeal({
-        ...editedMeal,
+  
+      setEditedMeal(prev => ({
+        ...prev,
         [parent]: {
-          ...editedMeal[parent],
-          [child]: value
+          ...prev[parent],
+          [child]: typeof prev[parent]?.[child] === 'object'
+            ? { ...prev[parent][child], value }
+            : value
         }
-      });
+      }));
     } else {
-      // Handle top-level properties
-      setEditedMeal({
-        ...editedMeal,
+      setEditedMeal(prev => ({
+        ...prev,
         [name]: value
-      });
+      }));
     }
   };
-
+  
   // Functions to manage ingredients
   const addIngredient = () => {
     if (newIngredient.trim()) {
@@ -123,7 +132,6 @@ export default function ViewMealModal({ isOpen, setIsOpen, meal, isStatic, onSav
       ingredients: updatedIngredients
     });
   };
-
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -275,7 +283,7 @@ export default function ViewMealModal({ isOpen, setIsOpen, meal, isStatic, onSav
                     <input 
                       type="text" 
                       name={`nutritionFacts.${key}`} 
-                      value={value} 
+                      value={typeof value === 'object' ? value.value : value}
                       onChange={handleInputChange}
                       className="text-white bg-gray-800 border border-gray-700 rounded px-2 py-1 w-24 text-right"
                     />
@@ -290,8 +298,8 @@ export default function ViewMealModal({ isOpen, setIsOpen, meal, isStatic, onSav
                 return (
                   <div key={key} className="flex justify-between">
                     <span className="text-gray-400">{label}</span>
-                    <span className="text-white">{value}</span>
-                  </div>
+                    <span className="text-white">{typeof value === 'object' ? value.value : value}</span>
+                    </div>
                 );
               })
             )}
