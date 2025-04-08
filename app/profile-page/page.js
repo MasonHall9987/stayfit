@@ -1,5 +1,5 @@
 "use client";
-
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 import { useAuth } from '../contexts/authContext';
 import { useState, useEffect } from 'react';
 import { useRouter } from "next/navigation";
@@ -9,23 +9,47 @@ import PersonalModal from './personal-modal';
 import PictureModal from './picture-modal';
 
 export default function ProfilePage() {
-  const auth = useAuth(); // Get auth context safely
+  const auth = useAuth();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState('profile');
+  const db = getFirestore();
+
   const [isSettingsModalOpen, setisSettingsModalOpen] = useState(false);
   const [isPersonalModalOpen, setisPersonalModalOpen] = useState(false);
   const [isPictureModalOpen, setisPictureModalOpen] = useState(false);
-  
-  // Prevent rendering until `auth` is available
-  if (!auth) {
-    return <div className="min-h-screen bg-black flex items-center justify-center text-white">Loading...</div>;
-  }
+  const [userStats, setUserStats] = useState(null);
+  const [loadingStats, setLoadingStats] = useState(true);
 
-  const { currentUser } = auth; // Now safely access currentUser
+  const { currentUser } = auth || {};
+
+  useEffect(() => {
+    const fetchUserStats = async () => {
+      if (!currentUser) return;
+      try {
+        const userStatsRef = doc(db, "users", currentUser.uid);
+        const userStatsSnap = await getDoc(userStatsRef);
+
+        if (userStatsSnap.exists()) {
+          setUserStats(userStatsSnap.data());
+        } else {
+          console.log("No stats found for user.");
+        }
+      } catch (error) {
+        console.error("Error fetching user stats:", error);
+      } finally {
+        setLoadingStats(false);
+      }
+    };
+
+    fetchUserStats();
+  }, [currentUser]);
 
   const handleSettings = () => setisSettingsModalOpen(true);
   const handlePersonal = () => setisPersonalModalOpen(true);
   const handlePicture = () => setisPictureModalOpen(true);
+
+  if (!auth || !currentUser) {
+    return <div className="min-h-screen bg-black flex items-center justify-center text-white">Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-black">
@@ -34,11 +58,11 @@ export default function ProfilePage() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <span className="text-2xl font-bold text-orange-500">StayFit</span>
           <div className="flex items-center space-x-8">
-            <button onClick={() => router.push("/workout-page")} className={`flex flex-col items-center text-gray-400 hover:text-orange-500`}>
+            <button onClick={() => router.push("/workout-page")} className="flex flex-col items-center text-gray-400 hover:text-orange-500">
               <Dumbbell className="h-6 w-6 mb-1" />
               <span className="text-sm">Workouts</span>
             </button>
-            <button onClick={() => router.push("/nutrition-page")} className={`flex flex-col items-center text-gray-400 hover:text-orange-500`}>
+            <button onClick={() => router.push("/nutrition-page")} className="flex flex-col items-center text-gray-400 hover:text-orange-500">
               <Apple className="h-6 w-6 mb-1" />
               <span className="text-sm">Nutrition</span>
             </button>
@@ -66,8 +90,8 @@ export default function ProfilePage() {
                   </button>
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-white">{currentUser?.displayName || currentUser?.email}</h1>
-                  <p className="text-gray-400">{currentUser?.email}</p>
+                  <h1 className="text-2xl font-bold text-white">{currentUser.displayName || currentUser.email}</h1>
+                  <p className="text-gray-400">{currentUser.email}</p>
                 </div>
               </div>
               <button onClick={handleSettings} className="text-gray-400 hover:text-white">
@@ -80,15 +104,21 @@ export default function ProfilePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div className="bg-gray-900 rounded-lg p-4 text-center">
               <p className="text-gray-400 mb-1">Workouts Completed</p>
-              <p className="text-2xl font-bold text-white">248</p>
+              <p className="text-2xl font-bold text-white">
+                {loadingStats ? "..." : userStats?.workoutsCompleted ?? 0}
+              </p>
             </div>
             <div className="bg-gray-900 rounded-lg p-4 text-center">
               <p className="text-gray-400 mb-1">Current Streak</p>
-              <p className="text-2xl font-bold text-white">12 days</p>
+              <p className="text-2xl font-bold text-white">
+                {loadingStats ? "..." : `${userStats?.currentStreak ?? 0} days`}
+              </p>
             </div>
             <div className="bg-gray-900 rounded-lg p-4 text-center">
               <p className="text-gray-400 mb-1">Achievement Points</p>
-              <p className="text-2xl font-bold text-white">1,540</p>
+              <p className="text-2xl font-bold text-white">
+                {loadingStats ? "..." : userStats?.achievementPoints ?? 0}
+              </p>
             </div>
           </div>
 

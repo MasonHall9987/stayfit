@@ -1,12 +1,12 @@
 "use client";
-
+import { getFirestore, doc, getDoc, setDoc, updateDoc, increment } from "firebase/firestore";
 import { useRouter } from "next/navigation"; 
 import { useState } from "react";
 import { Mail, Lock, ArrowRight } from "lucide-react";
 import ForgotPasswordModal from "./sign-in-page/forgot-password-modal"; 
 import { doSignInWithEmailAndPassword } from "./firebase/auth";
 import { useAuth } from "./contexts/authContext";
-
+import { getAuth } from "firebase/auth";
 export default function Home() {
   const auth = useAuth(); // Fetch auth context
   const userLoggedIn = auth?.userLoggedIn || false; // Prevent crash if undefined
@@ -15,7 +15,9 @@ export default function Home() {
   const [password, setPassword] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
-
+  const db = getFirestore();
+  const authInstance = getAuth();
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isSigningIn) return; // Prevent multiple clicks

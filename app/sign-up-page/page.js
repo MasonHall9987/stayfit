@@ -1,11 +1,12 @@
-"use client"
-
+"use client";
 import { useState } from 'react';
 import { Mail, Lock, User, ArrowRight } from 'lucide-react';
 import { useRouter } from "next/navigation"; // Import useRouter
 import TermsConditionsModal from './terms-conditions-modal';
 import { useAuth } from '../contexts/authContext';
 import { doCreateUserWithEmailAndPassword } from '../firebase/auth';
+import { getFirestore, doc, setDoc } from "firebase/firestore"; // Firestore imports
+import { auth } from '../firebase/firebase'; // 👈 This gives you access to auth.currentUser
 
 export default function SignUp() {
   const [email, setEmail] = useState('');
@@ -16,12 +17,12 @@ export default function SignUp() {
   const [isRegistering, setIsRegistering] = useState(false);
 
   const router = useRouter(); // Initialize router
-  
+  const db = getFirestore(); // Initialize Firestore
 
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    if (isRegistering) return; // Prevent multiple clicks
+    if (isRegistering) return;
   
     if (password !== confirmPassword) {
       alert("Passwords do not match!");
@@ -29,17 +30,27 @@ export default function SignUp() {
     }
   
     setIsRegistering(true);
-  
     try {
-      await doCreateUserWithEmailAndPassword(email, password);
+      const userCredential = await doCreateUserWithEmailAndPassword(email, password);
+      const user = userCredential.user;
+    
+      const userStats = {
+        workoutsCompleted: 0,
+        currentStreak: 1,
+        achievementPoints: 0
+      };
+    
+      console.log("Setting Firestore document...");
+      await setDoc(doc(db, "users", user.uid), userStats);
+      console.log("Document written!");
+    
       alert("Account created successfully!");
-      router.push("/profile-page"); // Change "/home" to the correct path in your app
+      router.push("/profile-page");
     } catch (error) {
-      alert(error.message); // Display error to user
-    } finally {
-      setIsRegistering(false);
+      console.error("Firestore or auth error:", error);
+      alert(error.message);
     }
-  };
+  };    
   
   const handleSignIn = (e) => {
     router.back();
@@ -132,13 +143,13 @@ export default function SignUp() {
             />
             <span className="text-sm text-gray-400">
               I agree to the{' '}
-            <button
-            type="button"
-            onClick={handleTermsConditions}
-            className="text-sm text-orange-500 hover:text-orange-400"
-            >
-            Terms and Conditions
-            </button>
+              <button
+                type="button"
+                onClick={handleTermsConditions}
+                className="text-sm text-orange-500 hover:text-orange-400"
+              >
+                Terms and Conditions
+              </button>
             </span>
           </div>
 
@@ -164,7 +175,6 @@ export default function SignUp() {
         </form>
       </div>
       <TermsConditionsModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
-
     </div>
   );
 }
