@@ -1,5 +1,5 @@
 "use client";
-
+import { addMealForUser } from './mealService';
 import { useState } from 'react';
 import { Mail, X, ArrowRight, Clock, Calendar, Apple, Utensils, Search, Plus, Minus, AlignLeft } from 'lucide-react';
 
@@ -79,11 +79,18 @@ export default function AddMealModal({ isOpen, setIsOpen }) {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log(mealData);
-    setIsOpen(false);
+  
+    try {
+      const id = await addMealForUser(mealData);
+      console.log("Meal added with ID:", id);
+      alert("Meal added successfully!");
+      setIsOpen(false);
+    } catch (error) {
+      console.error("Error adding meal:", error);
+      alert("Failed to add meal.");
+    }
   };
 
   return (
