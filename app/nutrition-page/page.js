@@ -2,42 +2,41 @@
 
 import { useState, useEffect } from 'react';
 import { Dumbbell, Apple, User, Plus, ChevronRight } from 'lucide-react';
-import { useRouter } from "next/navigation"; // Import useRouter
+import { useRouter } from "next/navigation";
 import { getMealsForUser } from './mealService';
 import AddMealModal from './add-meal-modal';
 import ViewMealModal from './view-meal-modal';
 
-
 export default function NutritionPage() {
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('nutrition');
   const router = useRouter();
-  const [isAddMealModalOpen, setIsAddMealModalOpen] = useState(false);
   const [isViewMealModalOpen, setIsViewMealModalOpen] = useState(false);
-  const [isStatic, setIsStatic] = useState(false); // Controls static vs dynamic view in modal
+  const [isStatic, setIsStatic] = useState(false);
   const [meals, setMeals] = useState([]);
-  const [selectedMeal, setSelectedMeal] = useState(null); // New state for selected meal
+  const [selectedMeal, setSelectedMeal] = useState(null);
+
+  const fetchMeals = async () => {
+    try {
+      const mealsData = await getMealsForUser();
+      setMeals(mealsData);
+    } catch (error) {
+      console.error('Error fetching meals:', error);
+    }
+  };
 
   useEffect(() => {
-    async function fetchMeals() {
-      try {
-        const mealsData = await getMealsForUser();
-        setMeals(mealsData);
-      } catch (error) {
-        console.error('Error fetching meals:', error);
-      }
-    }
-
     fetchMeals();
   }, []);
 
   const handleAddMeal = () => {
-    setIsAddMealModalOpen(true);
+    setIsAddModalOpen(true); // ✅ Correct state used here
   };
 
   const handleTodayViewMeal = (meal) => {
-    setSelectedMeal(meal); // Set the selected meal
-    setIsStatic(false); // Non-static view (meaning the user can edit the meal)
-    setIsViewMealModalOpen(true); // Open the ViewMealModal
+    setSelectedMeal(meal);
+    setIsStatic(false);
+    setIsViewMealModalOpen(true);
   };
 
   return (
@@ -78,7 +77,10 @@ export default function NutritionPage() {
               <h1 className="text-3xl font-bold text-white mb-2">Nutrition</h1>
               <p className="text-gray-400">Track your meals and meet your goals</p>
             </div>
-            <button onClick={handleAddMeal} className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors flex items-center space-x-2">
+            <button
+              onClick={handleAddMeal}
+              className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors flex items-center space-x-2"
+            >
               <Plus className="h-5 w-5" />
               <span>Add Meal</span>
             </button>
@@ -91,7 +93,7 @@ export default function NutritionPage() {
                 meals.map((meal) => (
                   <div
                     key={meal.id}
-                    onClick={() => handleTodayViewMeal(meal)} // Correctly handle the click to view the meal
+                    onClick={() => handleTodayViewMeal(meal)}
                     className="p-4 hover:bg-gray-800 transition-colors cursor-pointer rounded-lg"
                   >
                     <div className="flex items-center justify-between">
@@ -111,14 +113,21 @@ export default function NutritionPage() {
         </div>
       </main>
 
-      <AddMealModal isOpen={isAddMealModalOpen} setIsOpen={setIsAddMealModalOpen} />
+      {/* ✅ Modal for Adding a Meal */}
+      <AddMealModal
+        isOpen={isAddModalOpen}
+        setIsOpen={setIsAddModalOpen}
+        onMealAdded={fetchMeals}
+      />
+
+      {/* ✅ Modal for Viewing/Editing a Meal */}
       <ViewMealModal
         isOpen={isViewMealModalOpen}
         setIsOpen={setIsViewMealModalOpen}
-        isStatic={isStatic} // Ensure the static view is passed correctly
-        meal={selectedMeal} // Pass the selected meal to the modal
+        isStatic={isStatic}
+        meal={selectedMeal}
+        onSave={fetchMeals}
       />
     </div>
   );
 }
-

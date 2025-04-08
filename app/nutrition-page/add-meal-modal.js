@@ -3,7 +3,7 @@ import { addMealForUser } from './mealService';
 import { useState } from 'react';
 import { Mail, X, ArrowRight, Clock, Calendar, Apple, Utensils, Search, Plus, Minus, AlignLeft } from 'lucide-react';
 
-export default function AddMealModal({ isOpen, setIsOpen }) {
+export default function AddMealModal({ isOpen, setIsOpen,onMealAdded }) {
   const [mealData, setMealData] = useState({
     name: '',
     mealType: 'breakfast',
@@ -86,6 +86,7 @@ export default function AddMealModal({ isOpen, setIsOpen }) {
       const id = await addMealForUser(mealData);
       console.log("Meal added with ID:", id);
       alert("Meal added successfully!");
+      onMealAdded?.(); // Trigger parent refresh if function exists
       setIsOpen(false);
     } catch (error) {
       console.error("Error adding meal:", error);

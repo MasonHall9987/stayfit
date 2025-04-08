@@ -8,7 +8,8 @@ import { X, Clock, Utensils, Apple, ChevronDown, ChevronUp, Edit, Trash2, Save, 
 export default function ViewMealModal({ isOpen, setIsOpen, meal, isStatic, onSave }) {
   const [showFullRecipe, setShowFullRecipe] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);  // New state for success message
+
   // Default meal data in case no meal is passed
   const defaultMeal = {
     name: "High Protein Breakfast",
@@ -89,24 +90,41 @@ export default function ViewMealModal({ isOpen, setIsOpen, meal, isStatic, onSav
     setEditedMeal({...mealData});
     setIsEditMode(false);
   };
-
   const handleDeleteMeal = async () => {
-    // Add your delete meal functionality here
     console.log("Delete meal:", mealData);
+
     if (confirm("Are you sure you want to delete this meal?")) {
       try {
-        // Assuming the meal object has an ID field
-        const mealDocRef = doc(db, "meals", meal.id);
-        await deleteDoc(mealDocRef); // Delete from Firestore
+        const user = auth.currentUser;
+        
+        if (!mealData.id) {
+          console.error("Meal ID is missing. Cannot delete from Firestore.");
+          return;
+        }
 
-        // Close the modal after deletion
-        setIsOpen(false);
+        const mealDocRef = doc(db, "users", user.uid, "meals", mealData.id);
+        await deleteDoc(mealDocRef);
+
+        if (onSave) {
+          onSave(null); // Update the parent UI state to reflect deletion
+        }
+
+        setIsOpen(false);  // Close the modal after deletion
+
+        // Set the success message and auto-hide it after 3 seconds
+        setShowSuccessMessage(true);
+        setTimeout(() => {
+          setShowSuccessMessage(false); // Hide the message after 3 seconds
+        }, 3000);
+
         console.log("Meal deleted successfully");
       } catch (error) {
         console.error("Error deleting meal:", error);
       }
     }
   };
+
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
   
