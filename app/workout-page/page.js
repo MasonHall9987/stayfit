@@ -21,9 +21,13 @@ export default function WorkoutPage() {
   const [isOpen, setIsOpen] = useState(false);
   const [workoutData, setWorkoutData] = useState(null);
   
-  const handleAddWorkout = () => {
+  const handleAddWorkout = async () => {
     setIsAddWorkoutModalOpen(true);
+    const workouts = await getWorkoutsForUser();
+    const sorted = workouts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    setRecentWorkouts(sorted);
   };
+  
 
   const handleViewAddWorkout = (workout) => {
     setSelectedWorkout(workout);
@@ -94,14 +98,13 @@ export default function WorkoutPage() {
     const fetchWorkouts = async () => {
       try {
         const workouts = await getWorkoutsForUser();
-        // Sort by date (optional: descending)
         const sorted = workouts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         setRecentWorkouts(sorted);
       } catch (error) {
         console.error('Failed to load workouts:', error);
       }
     };
-
+  
     fetchWorkouts();
   }, []);
   return (
