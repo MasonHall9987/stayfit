@@ -5,6 +5,8 @@ import { Dumbbell, Apple, User, PlayCircle, Plus, Clock, Flame, ChevronRight, Fi
 import { useRouter } from "next/navigation";
 import AddWorkoutModal from './add-workout-modal';
 import ViewWorkoutModal from './view-workout-modal';
+import { getWorkoutsForUser } from './workoutService';
+import { useEffect } from 'react';
 
 export default function WorkoutPage() {
   const [activeTab, setActiveTab] = useState('workouts');
@@ -85,8 +87,22 @@ export default function WorkoutPage() {
     ]
   };
 
-  const recentWorkouts = [{title: "Upper Body Strength", date: "Yesterday", id: 0}];
+  const [recentWorkouts, setRecentWorkouts] = useState([]);
 
+  useEffect(() => {
+    const fetchWorkouts = async () => {
+      try {
+        const workouts = await getWorkoutsForUser();
+        // Sort by date (optional: descending)
+        const sorted = workouts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        setRecentWorkouts(sorted);
+      } catch (error) {
+        console.error('Failed to load workouts:', error);
+      }
+    };
+  
+    fetchWorkouts();
+  }, []);
   return (
     <div className="min-h-screen bg-black">
       {/* Navigation Bar */}
@@ -187,7 +203,7 @@ export default function WorkoutPage() {
                     )}
                   </div>
                   </div>
-                  <button className="w-full p-4 text-left"  onClick={() => handleViewWorkout()}>
+                  <button className="w-full p-4 text-left"  onClick={() => handleViewAddWorkout(workout)}>
                     <h3 className="text-lg font-semibold text-white mb-2">{workout.title}</h3>
                     <div className="flex items-center justify-between text-sm">
                       <div className="flex items-center text-gray-400">
@@ -220,8 +236,10 @@ export default function WorkoutPage() {
                       <Dumbbell className="h-6 w-6 text-orange-500" />
                     </div>
                     <div>
-                      <h3 className="text-white font-medium">{workout.title}</h3>
-                      <p className="text-gray-400 text-sm">{workout.date}</p>
+                    <h3 className="text-white font-medium">{workout.name}</h3>
+<p className="text-gray-400 text-sm">
+  {new Date(workout.createdAt).toLocaleDateString()}
+</p>
                     </div>
                   </div>
                   <ChevronRight className="h-5 w-5 text-gray-400" />
