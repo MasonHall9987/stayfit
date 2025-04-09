@@ -18,21 +18,22 @@ export default function WorkoutPage() {
   const videoRefs = useRef({});
   const [selectedWorkout, setSelectedWorkout] = useState(null);
   const [isStatic, setIsStatic] = useState(false);
-
+  const [isOpen, setIsOpen] = useState(false);
+  const [workoutData, setWorkoutData] = useState(null);
+  
   const handleAddWorkout = () => {
     setIsAddWorkoutModalOpen(true);
   };
 
   const handleViewAddWorkout = (workout) => {
-    setIsStatic(false)
     setSelectedWorkout(workout);
+    setIsStatic(false);
     setIsViewWorkoutModalOpen(true);
+    setWorkoutData(workout);  // Make sure to set workoutData here
+
   };
-  const handleViewWorkout = (workout) => {
-    setIsStatic(true)
-    setSelectedWorkout(workout);
-    setIsViewWorkoutModalOpen(true);
-  };
+  
+
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
@@ -100,7 +101,7 @@ export default function WorkoutPage() {
         console.error('Failed to load workouts:', error);
       }
     };
-  
+
     fetchWorkouts();
   }, []);
   return (
@@ -112,23 +113,23 @@ export default function WorkoutPage() {
           <span className="text-2xl font-bold text-orange-500">StayFit</span>
           {/* Navigation Items */}
           <div className="flex items-center space-x-8">
-            <button 
+            <button
               onClick={() => setActiveTab('workouts')}
               className={`flex flex-col items-center ${activeTab === 'workouts' ? 'text-orange-500' : 'text-gray-400'} hover:text-orange-500 transition-colors`}
             >
               <Dumbbell className="h-6 w-6 mb-1" />
               <span className="text-sm">Workouts</span>
             </button>
-            
-            <button 
+
+            <button
               onClick={() => router.push("/nutrition-page")}
               className={`flex flex-col items-center ${activeTab === 'nutrition' ? 'text-orange-500' : 'text-gray-400'} hover:text-orange-500 transition-colors`}
             >
               <Apple className="h-6 w-6 mb-1" />
               <span className="text-sm">Nutrition</span>
             </button>
-            
-            <button 
+
+            <button
               onClick={() => router.push("/profile-page")}
               className={`flex flex-col items-center ${activeTab === 'profile' ? 'text-orange-500' : 'text-gray-400'} hover:text-orange-500 transition-colors`}
             >
@@ -153,7 +154,7 @@ export default function WorkoutPage() {
               <span>Add Workout</span>
             </button>
           </div>
-          
+
           {/* Workout Categories as Tabs */}
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-white mb-4">Categories</h2>
@@ -162,15 +163,13 @@ export default function WorkoutPage() {
                 <button
                   key={index}
                   onClick={() => handleCategorySelect(category)}
-                  className={`p-4 rounded-lg transition-colors text-center ${
-                    selectedCategory === category 
-                      ? 'bg-orange-500 text-white' 
+                  className={`p-4 rounded-lg transition-colors text-center ${selectedCategory === category
+                      ? 'bg-orange-500 text-white'
                       : 'bg-gray-900 text-gray-300 hover:bg-gray-800'
-                  }`}
+                    }`}
                 >
-                  <Dumbbell className={`h-8 w-8 mx-auto mb-2 ${
-                    selectedCategory === category ? 'text-white' : 'text-orange-500'
-                  }`} />
+                  <Dumbbell className={`h-8 w-8 mx-auto mb-2 ${selectedCategory === category ? 'text-white' : 'text-orange-500'
+                    }`} />
                   <span>{category}</span>
                 </button>
               ))}
@@ -184,26 +183,26 @@ export default function WorkoutPage() {
               {workoutVideos[selectedCategory].map((workout) => (
                 <div key={workout.id} className="bg-gray-900 rounded-lg overflow-hidden hover:bg-gray-800 transition-colors group">
                   <div className="relative">
-                  <div className="aspect-video bg-gray-800 flex items-center justify-center">
-                    {workout.videoUrl.includes("youtube.com") ? (
-                      <iframe
-                        width="100%"
-                        height="100%"
-                        src={workout.videoUrl}
-                        title={workout.title}
-                        allowFullScreen
-                      />
-                    ) : (
-                      <video
-                        ref={(el) => (videoRefs.current[workout.id] = el)}
-                        src={workout.videoUrl}
-                        className="h-full w-full object-cover"
-                        controls
-                      />
-                    )}
+                    <div className="aspect-video bg-gray-800 flex items-center justify-center">
+                      {workout.videoUrl.includes("youtube.com") ? (
+                        <iframe
+                          width="100%"
+                          height="100%"
+                          src={workout.videoUrl}
+                          title={workout.title}
+                          allowFullScreen
+                        />
+                      ) : (
+                        <video
+                          ref={(el) => (videoRefs.current[workout.id] = el)}
+                          src={workout.videoUrl}
+                          className="h-full w-full object-cover"
+                          controls
+                        />
+                      )}
+                    </div>
                   </div>
-                  </div>
-                  <button className="w-full p-4 text-left"  onClick={() => handleViewAddWorkout(workout)}>
+                  <button className="w-full p-4 text-left" onClick={() => handleViewAddWorkout(workout)}>
                     <h3 className="text-lg font-semibold text-white mb-2">{workout.title}</h3>
                     <div className="flex items-center justify-between text-sm">
                       <div className="flex items-center text-gray-400">
@@ -221,36 +220,41 @@ export default function WorkoutPage() {
               ))}
             </div>
           </div>
-          
+
           {/* Recent Workouts */}
           <div>
-            <h2 className="text-xl font-semibold text-white mb-4">Recent Workouts</h2>
-            <div className="bg-gray-900 rounded-lg divide-y divide-gray-800">
-              {recentWorkouts.map((workout, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleViewAddWorkout()}
-                  className="w-full text-left p-4 flex items-center justify-between hover:bg-gray-800 transition-colors cursor-pointer rounded-lg">
-                  <div className="flex items-center space-x-4">
-                    <div className="bg-gray-800 p-3 rounded-lg">
-                      <Dumbbell className="h-6 w-6 text-orange-500" />
-                    </div>
-                    <div>
-                    <h3 className="text-white font-medium">{workout.name}</h3>
-<p className="text-gray-400 text-sm">
-  {new Date(workout.createdAt).toLocaleDateString()}
-</p>
-                    </div>
-                  </div>
-                  <ChevronRight className="h-5 w-5 text-gray-400" />
-                </button>
-              ))}
-            </div>
+  <h2 className="text-xl font-semibold text-white mb-4">Recent Workouts</h2>
+  <div className="bg-gray-900 rounded-lg divide-y divide-gray-800">
+    {recentWorkouts.map((workout, index) => (
+      <button
+        key={index}
+        onClick={() => handleViewAddWorkout(workout)}  // Open the modal on tap
+        className="w-full text-left p-4 flex items-center justify-between hover:bg-gray-800 transition-colors cursor-pointer rounded-lg"
+      >
+        <div className="flex items-center space-x-4">
+          <div className="bg-gray-800 p-3 rounded-lg">
+            <Dumbbell className="h-6 w-6 text-orange-500" />
+          </div>
+          <div>
+            <h3 className="text-white font-medium">{workout.name}</h3>
+            <p className="text-gray-400 text-sm">
+              {new Date(workout.createdAt).toLocaleDateString()}
+            </p>
           </div>
         </div>
+        <ChevronRight className="h-5 w-5 text-gray-400" />
+      </button>
+    ))}
+  </div>
+</div>
+        </div>
       </main>
-      <AddWorkoutModal isOpen={isAddWorkoutModalOpen} setIsOpen={setIsAddWorkoutModalOpen}/>
-      <ViewWorkoutModal isOpen={isViewWorkoutModalOpen} setIsOpen={setIsViewWorkoutModalOpen} isStatic={isStatic}/>
+      <AddWorkoutModal isOpen={isAddWorkoutModalOpen} setIsOpen={setIsAddWorkoutModalOpen} />
+      <ViewWorkoutModal
+    isOpen={isViewWorkoutModalOpen}  // Control visibility
+    setIsOpen={setIsViewWorkoutModalOpen}  // Handle closing
+    workoutData={workoutData}  // Pass workout data
+  />
     </div>
   );
 }

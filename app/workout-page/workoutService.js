@@ -1,5 +1,5 @@
 import { db, auth } from '../firebase/firebase';
-import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, doc, deleteDoc} from 'firebase/firestore';
 
 /**
  * Add a new workout to Firestore
@@ -61,3 +61,24 @@ export async function getWorkoutsForUser() {
     throw error;
   }
 }
+
+  export async function deleteWorkout(workoutId) {
+    const user = auth.currentUser;
+  
+    if (!user) {
+      throw new Error('User not authenticated');
+    }
+  
+    try {
+      // Reference to the workout document to delete
+      const workoutDocRef = doc(db, 'workouts', workoutId);
+  
+      // Delete the workout document
+      await deleteDoc(workoutDocRef);
+      console.log('Workout deleted successfully');
+    } catch (error) {
+      console.error('Error deleting workout:', error);
+      throw error;
+    }
+  }
+
