@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Mail, X, ArrowRight, Clock, Calendar, Dumbbell, Plus, Minus, Search, Timer } from 'lucide-react';
+import { addWorkout } from './workoutService';
 
 export default function AddWorkoutModal({ isOpen, setIsOpen }) {
   const [workoutData, setWorkoutData] = useState({
@@ -43,12 +44,17 @@ export default function AddWorkoutModal({ isOpen, setIsOpen }) {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission here
-    setIsOpen(false);
+  
+    try {
+      await addWorkout(workoutData, exercises);
+      setIsOpen(false);
+      // Optionally, trigger refresh in parent with a callback prop
+    } catch (err) {
+      console.error('Error saving workout:', err);
+    }
   };
-
   return (
     <>
       {isOpen && (
