@@ -106,9 +106,6 @@ export default function ProfilePage() {
                   <p className="text-gray-400">{currentUser.email}</p>
                 </div>
               </div>
-              <button onClick={handleSettings} className="text-gray-400 hover:text-white">
-                <Settings className="h-6 w-6" />
-              </button>
             </div>
           </div>
 
@@ -132,10 +129,6 @@ export default function ProfilePage() {
           <div className="bg-gray-900 rounded-lg p-6">
             <h2 className="text-xl font-bold text-white mb-4">Account Settings</h2>
             <div className="space-y-4">
-              <button onClick={handlePersonal} className="w-full flex items-center justify-between px-4 py-3 bg-gray-800 rounded-lg hover:bg-gray-700">
-                <span className="text-gray-300">Personal Information</span>
-                <Edit className="h-5 w-5 text-gray-400" />
-              </button>
               <button onClick={() => router.push("/")} className="w-full flex items-center justify-between px-4 py-3 bg-gray-800 rounded-lg hover:bg-gray-700 text-red-400">
                 <span>Sign Out</span>
                 <LogOut className="h-5 w-5" />
@@ -146,7 +139,6 @@ export default function ProfilePage() {
       </main>
 
       <SettingsModal isOpen={isSettingsModalOpen} setIsOpen={setisSettingsModalOpen} />
-      <PersonalModal isOpen={isPersonalModalOpen} setIsOpen={setisPersonalModalOpen} />
       <PictureModal isOpen={isPictureModalOpen} setIsOpen={setisPictureModalOpen} />
     </div>
   );

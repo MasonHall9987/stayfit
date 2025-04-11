@@ -66,29 +66,29 @@ export default function WorkoutPage() {
       { id: "st3", title: "Titan Legs: Unbreakable Strength", duration: "40 min", calories: "300", level: "Advanced", videoUrl: "https://www.youtube.com/embed/H6mRkx1x77k" }
     ],
     "Cardio": [
-      { id: "c1", title: "High Energy Cardio", duration: "35 min", calories: "400", level: "Intermediate", videoUrl: "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4" },
-      { id: "c2", title: "Steady State Run", duration: "45 min", calories: "450", level: "Beginner", videoUrl: "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4" },
-      { id: "c3", title: "Interval Sprints", duration: "25 min", calories: "350", level: "Advanced", videoUrl: "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4" }
+      { id: "c1", title: "High Energy Cardio", duration: "35 min", calories: "400", level: "Intermediate", videoUrl: "https://www.youtube.com/embed/kZDvg92tTMc" },
+      { id: "c2", title: "Steady State Run", duration: "45 min", calories: "450", level: "Beginner", videoUrl: "https://www.youtube.com/embed/K44TJK9iNf8" },
+      { id: "c3", title: "Interval Sprints", duration: "25 min", calories: "350", level: "Advanced", videoUrl: "https://www.youtube.com/embed/Cvchap5oZSE" }
     ],
     "HIIT": [
-      { id: "h1", title: "HIIT Cardio Blast", duration: "30 min", calories: "400", level: "Advanced", videoUrl: "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4" },
-      { id: "h2", title: "Tabata Intervals", duration: "20 min", calories: "300", level: "Intermediate", videoUrl: "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4" },
-      { id: "h3", title: "Full Body HIIT", duration: "25 min", calories: "350", level: "Advanced", videoUrl: "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4" }
+      { id: "h1", title: "HIIT Cardio Blast", duration: "30 min", calories: "400", level: "Advanced", videoUrl: "https://www.youtube.com/embed/M0uO8X3_tEA" },
+      { id: "h2", title: "Tabata Intervals", duration: "20 min", calories: "300", level: "Intermediate", videoUrl: "https://www.youtube.com/embed/5dImGG-r7DU" },
+      { id: "h3", title: "Full Body HIIT", duration: "25 min", calories: "350", level: "Advanced", videoUrl: "https://www.youtube.com/embed/WNUvx5y-1QE" }
     ],
     "Yoga": [
-      { id: "y1", title: "Morning Flow", duration: "40 min", calories: "200", level: "Beginner", videoUrl: "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4" },
-      { id: "y2", title: "Power Yoga", duration: "50 min", calories: "280", level: "Intermediate", videoUrl: "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4" },
-      { id: "y3", title: "Restorative Yoga", duration: "60 min", calories: "150", level: "Beginner", videoUrl: "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4" }
+      { id: "y1", title: "Morning Flow", duration: "40 min", calories: "200", level: "Beginner", videoUrl: "https://www.youtube.com/embed/uqJ-jANozcE" },
+      { id: "y2", title: "Power Yoga", duration: "50 min", calories: "280", level: "Intermediate", videoUrl: "https://www.youtube.com/embed/8JWZehPF9_k" },
+      { id: "y3", title: "Restorative Yoga", duration: "60 min", calories: "150", level: "Beginner", videoUrl: "https://www.youtube.com/embed/pdHLxolGGX4" }
     ],
     "Core": [
-      { id: "cr1", title: "Core & Abs Focus", duration: "20 min", calories: "150", level: "Beginner", videoUrl: "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4" },
-      { id: "cr2", title: "Advanced Core", duration: "25 min", calories: "200", level: "Advanced", videoUrl: "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4" },
-      { id: "cr3", title: "Pilates Core", duration: "35 min", calories: "230", level: "Intermediate", videoUrl: "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4" }
+      { id: "cr1", title: "Core & Abs Focus", duration: "20 min", calories: "150", level: "Beginner", videoUrl: "https://www.youtube.com/embed/zv7kSlx7mqE" },
+      { id: "cr2", title: "Advanced Core", duration: "25 min", calories: "200", level: "Advanced", videoUrl: "https://www.youtube.com/embed/ltw_AXKP_p0" },
+      { id: "cr3", title: "Pilates Core", duration: "35 min", calories: "230", level: "Intermediate", videoUrl: "https://www.youtube.com/embed/1WIah0t1Bzw" }
     ],
     "Recovery": [
-      { id: "r1", title: "Foam Rolling", duration: "30 min", calories: "100", level: "Beginner", videoUrl: "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4" },
-      { id: "r2", title: "Stretching Routine", duration: "25 min", calories: "120", level: "Beginner", videoUrl: "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4" },
-      { id: "r3", title: "Mobility Work", duration: "35 min", calories: "150", level: "Intermediate", videoUrl: "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4" }
+      { id: "r1", title: "Foam Rolling", duration: "30 min", calories: "100", level: "Beginner", videoUrl: "https://www.youtube.com/embed/M0uO8X3_tEA" },
+      { id: "r2", title: "Stretching Routine", duration: "25 min", calories: "120", level: "Beginner", videoUrl: "https://www.youtube.com/embed/M0uO8X3_tEA" },
+      { id: "r3", title: "Mobility Work", duration: "35 min", calories: "150", level: "Intermediate", videoUrl: "https://www.youtube.com/embed/M0uO8X3_tEA" }
     ]
   };
 
