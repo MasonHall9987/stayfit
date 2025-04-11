@@ -94,16 +94,18 @@ export default function WorkoutPage() {
 
   const [recentWorkouts, setRecentWorkouts] = useState([]);
 
+
+  const fetchWorkouts = async () => {
+    try {
+      const workouts = await getWorkoutsForUser();
+      const sorted = workouts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      setRecentWorkouts(sorted);
+    } catch (error) {
+      console.error('Failed to load workouts:', error);
+    }
+  };
+
   useEffect(() => {
-    const fetchWorkouts = async () => {
-      try {
-        const workouts = await getWorkoutsForUser();
-        const sorted = workouts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        setRecentWorkouts(sorted);
-      } catch (error) {
-        console.error('Failed to load workouts:', error);
-      }
-    };
   
     fetchWorkouts();
   }, []);
@@ -252,7 +254,7 @@ export default function WorkoutPage() {
 </div>
         </div>
       </main>
-      <AddWorkoutModal isOpen={isAddWorkoutModalOpen} setIsOpen={setIsAddWorkoutModalOpen} />
+      <AddWorkoutModal isOpen={isAddWorkoutModalOpen} setIsOpen={setIsAddWorkoutModalOpen} onWorkoutAdded={fetchWorkouts}/>
       <ViewWorkoutModal
     isOpen={isViewWorkoutModalOpen}  // Control visibility
     setIsOpen={setIsViewWorkoutModalOpen}  // Handle closing

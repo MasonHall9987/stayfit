@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Mail, X, ArrowRight, Clock, Calendar, Dumbbell, Plus, Minus, Search, Timer } from 'lucide-react';
 import { addWorkout } from './workoutService';
 
-export default function AddWorkoutModal({ isOpen, setIsOpen }) {
+export default function AddWorkoutModal({ isOpen, setIsOpen, onWorkoutAdded }) {
   const [workoutData, setWorkoutData] = useState({
     name: '',
     type: 'strength',
@@ -49,6 +49,7 @@ export default function AddWorkoutModal({ isOpen, setIsOpen }) {
   
     try {
       await addWorkout(workoutData, exercises);
+      onWorkoutAdded?.(); // Trigger parent refresh if function exists
       setIsOpen(false);
       // Optionally, trigger refresh in parent with a callback prop
     } catch (err) {
