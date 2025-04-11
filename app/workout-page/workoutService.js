@@ -1,5 +1,5 @@
 import { db, auth } from '../firebase/firebase';
-import { collection, addDoc, query, where, getDocs, doc, deleteDoc} from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, doc, deleteDoc, updateDoc} from 'firebase/firestore';
 
 /**
  * Add a new workout to Firestore
@@ -81,4 +81,9 @@ export async function getWorkoutsForUser() {
       throw error;
     }
   }
+
+  export const updateWorkout = async (id, updatedWorkout) => {
+    const workoutRef = doc(db, "workouts", id);
+    await updateDoc(workoutRef, updatedWorkout);
+  };
 

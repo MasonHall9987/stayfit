@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { X, ArrowRight, Clock, Calendar, Dumbbell, Timer, CheckCircle, Edit, Trash2, Save } from 'lucide-react';
 import { deleteWorkout } from './workoutService';
+import { updateWorkout } from './workoutService';
 
 export default function ViewWorkoutModal({ isOpen, setIsOpen, workoutData, isStatic, onChange}) {
   const [editMode, setEditMode] = useState(false);
@@ -68,12 +69,24 @@ export default function ViewWorkoutModal({ isOpen, setIsOpen, workoutData, isSta
     setExercises(updated);
   };
 
-  const handleSave = () => {
-    console.log('Saved workout:', workoutDataState);
-    console.log('Saved exercises:', exercises);
-    toggleEditMode();
-    // Implement save API call here
+  const handleSave = async () => {
+    try {
+      const updatedData = {
+        ...workoutDataState,
+        exercises,
+      };
+  
+      await updateWorkout(workoutDataState.id, updatedData); // Save to Firestore
+      alert("Workout updated!");
+      toggleEditMode();
+      onChange?.();
+      setIsOpen(false); // Optional: close modal after save
+    } catch (error) {
+      console.error("Error saving workout:", error);
+      alert("Failed to update workout.");
+    }
   };
+  
 
   if (loading) return <div>Loading...</div>;
 
