@@ -207,7 +207,7 @@ export default function WorkoutPage() {
                       )}
                     </div>
                   </div>
-                  <button className="w-full p-4 text-left" onClick={() => handleViewAddWorkout(workout)}>
+                  <div className="w-full p-4 text-left">
                     <h3 className="text-lg font-semibold text-white mb-2">{workout.title}</h3>
                     <div className="flex items-center justify-between text-sm">
                       <div className="flex items-center text-gray-400">
@@ -220,7 +220,7 @@ export default function WorkoutPage() {
                       </div>
                       <ChevronRight className="h-5 w-5 text-orange-500" />
                     </div>
-                  </button>
+                  </div>
                 </div>
               ))}
             </div>
