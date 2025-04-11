@@ -33,24 +33,26 @@ export default function SignUp() {
     try {
       const userCredential = await doCreateUserWithEmailAndPassword(email, password);
       const user = userCredential.user;
-    
-      const userStats = {
-        workoutsCompleted: 0,
-        currentStreak: 1,
-        achievementPoints: 0
+  
+      // ✅ New: only store name, email, uid
+      const userData = {
+        name: name,
+        email: email,
+        uid: user.uid
       };
-    
+  
       console.log("Setting Firestore document...");
-      await setDoc(doc(db, "users", user.uid), userStats);
+      await setDoc(doc(db, "users", user.uid), userData); // 👈 saves to Firestore
       console.log("Document written!");
-    
+  
       alert("Account created successfully!");
       router.push("/profile-page");
     } catch (error) {
       console.error("Firestore or auth error:", error);
       alert(error.message);
     }
-  };    
+  };
+    
   
   const handleSignIn = (e) => {
     router.back();
