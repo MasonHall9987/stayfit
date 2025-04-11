@@ -15,11 +15,27 @@ export default function NutritionPage() {
   const [isStatic, setIsStatic] = useState(false);
   const [meals, setMeals] = useState([]);
   const [selectedMeal, setSelectedMeal] = useState(null);
+  const [totals, setTotals] = useState({
+    calories: 0,
+    protein: 0,
+    carbs: 0,
+    fat: 0,
+  });
 
   const fetchMeals = async () => {
     try {
       const mealsData = await getMealsForUser();
       setMeals(mealsData);
+
+      const totalStats = mealsData.reduce((acc, meal) => {
+        acc.calories += meal.calories || 0;
+        acc.protein += meal.protein || 0;
+        acc.carbs += meal.carbs || 0;
+        acc.fat += meal.fat || 0;
+        return acc;
+      }, { calories: 0, protein: 0, carbs: 0, fat: 0 });
+
+      setTotals(totalStats);
     } catch (error) {
       console.error('Error fetching meals:', error);
     }
@@ -30,7 +46,7 @@ export default function NutritionPage() {
   }, []);
 
   const handleAddMeal = () => {
-    setIsAddModalOpen(true); // ✅ Correct state used here
+    setIsAddModalOpen(true);
   };
 
   const handleTodayViewMeal = (meal) => {
@@ -86,6 +102,27 @@ export default function NutritionPage() {
             </button>
           </div>
 
+          {/* Totals Section */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+  <div className="bg-gray-900 rounded-lg p-4 text-center">
+    <p className="text-gray-400 text-sm mb-1">Calories</p>
+    <p className="text-2xl font-bold text-white">{Number(totals.calories)}</p>
+  </div>
+  <div className="bg-gray-900 rounded-lg p-4 text-center">
+    <p className="text-gray-400 text-sm mb-1">Protein (g)</p>
+    <p className="text-2xl font-bold text-white">{Number(totals.protein)}</p>
+  </div>
+  <div className="bg-gray-900 rounded-lg p-4 text-center">
+    <p className="text-gray-400 text-sm mb-1">Carbs (g)</p>
+    <p className="text-2xl font-bold text-white">{Number(totals.carbs)}</p>
+  </div>
+  <div className="bg-gray-900 rounded-lg p-4 text-center">
+    <p className="text-gray-400 text-sm mb-1">Fat (g)</p>
+    <p className="text-2xl font-bold text-white">{Number(totals.fat)}</p>
+  </div>
+</div>
+
+
           <div>
             <h2 className="text-xl font-semibold text-white mb-4">Today's Meals</h2>
             <div className="bg-gray-900 rounded-lg divide-y divide-gray-800">
@@ -113,14 +150,14 @@ export default function NutritionPage() {
         </div>
       </main>
 
-      {/* ✅ Modal for Adding a Meal */}
+      {/* Add Meal Modal */}
       <AddMealModal
         isOpen={isAddModalOpen}
         setIsOpen={setIsAddModalOpen}
         onMealAdded={fetchMeals}
       />
 
-      {/* ✅ Modal for Viewing/Editing a Meal */}
+      {/* View/Edit Meal Modal */}
       <ViewMealModal
         isOpen={isViewMealModalOpen}
         setIsOpen={setIsViewMealModalOpen}
