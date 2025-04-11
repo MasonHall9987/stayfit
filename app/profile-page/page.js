@@ -1,5 +1,5 @@
 "use client";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { useAuth } from '../contexts/authContext';
 import { useState, useEffect } from 'react';
 import { useRouter } from "next/navigation";
@@ -16,7 +16,8 @@ export default function ProfilePage() {
   const [isSettingsModalOpen, setisSettingsModalOpen] = useState(false);
   const [isPersonalModalOpen, setisPersonalModalOpen] = useState(false);
   const [isPictureModalOpen, setisPictureModalOpen] = useState(false);
-  const [userStats, setUserStats] = useState(null);
+  const [workoutCount, setWorkoutCount] = useState(0);
+  const [currentStreak, setCurrentStreak] = useState(0);
   const [loadingStats, setLoadingStats] = useState(true);
 
   const { currentUser } = auth || {};
@@ -24,17 +25,26 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchUserStats = async () => {
       if (!currentUser) return;
-      try {
-        const userStatsRef = doc(db, "users", currentUser.uid);
-        const userStatsSnap = await getDoc(userStatsRef);
 
-        if (userStatsSnap.exists()) {
-          setUserStats(userStatsSnap.data());
-        } else {
-          console.log("No stats found for user.");
+      try {
+        // Fetch workouts
+        const workoutsQuery = query(
+          collection(db, "workouts"),
+          where("userId", "==", currentUser.uid)
+        );
+        const workoutsSnap = await getDocs(workoutsQuery);
+        setWorkoutCount(workoutsSnap.size);
+
+        // Fetch other stats if any (like streaks)
+        const userDocRef = doc(db, "users", currentUser.uid);
+        const userDocSnap = await getDoc(userDocRef);
+
+        if (userDocSnap.exists()) {
+          const data = userDocSnap.data();
+          setCurrentStreak(data.currentStreak ?? 0);
         }
       } catch (error) {
-        console.error("Error fetching user stats:", error);
+        console.error("Error fetching profile stats:", error);
       } finally {
         setLoadingStats(false);
       }
@@ -101,23 +111,17 @@ export default function ProfilePage() {
           </div>
 
           {/* Profile Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div className="bg-gray-900 rounded-lg p-4 text-center">
               <p className="text-gray-400 mb-1">Workouts Completed</p>
               <p className="text-2xl font-bold text-white">
-                {loadingStats ? "..." : userStats?.workoutsCompleted ?? 0}
+                {loadingStats ? "..." : workoutCount}
               </p>
             </div>
             <div className="bg-gray-900 rounded-lg p-4 text-center">
               <p className="text-gray-400 mb-1">Current Streak</p>
               <p className="text-2xl font-bold text-white">
-                {loadingStats ? "..." : `${userStats?.currentStreak ?? 0} days`}
-              </p>
-            </div>
-            <div className="bg-gray-900 rounded-lg p-4 text-center">
-              <p className="text-gray-400 mb-1">Achievement Points</p>
-              <p className="text-2xl font-bold text-white">
-                {loadingStats ? "..." : userStats?.achievementPoints ?? 0}
+                {loadingStats ? "..." : `${currentStreak} days`}
               </p>
             </div>
           </div>
