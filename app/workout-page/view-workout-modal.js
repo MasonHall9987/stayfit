@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { X, ArrowRight, Clock, Calendar, Dumbbell, Timer, CheckCircle, Edit, Trash2, Save } from 'lucide-react';
 import { deleteWorkout } from './workoutService';
 
-export default function ViewWorkoutModal({ isOpen, setIsOpen, workoutData, isStatic }) {
+export default function ViewWorkoutModal({ isOpen, setIsOpen, workoutData, isStatic, onChange}) {
   const [editMode, setEditMode] = useState(false);
   const [workoutDataState, setWorkoutDataState] = useState(workoutData);
   const [exercises, setExercises] = useState(workoutData?.exercises || []);
@@ -41,11 +41,14 @@ export default function ViewWorkoutModal({ isOpen, setIsOpen, workoutData, isSta
   
     try {
       await deleteWorkout(workoutData.id); // Pass the workout's ID to delete it
+      onChange?.();
       setIsOpen(false); // Close the modal
     } catch (error) {
       console.error('Error deleting workout:', error);
       // Optionally, show some feedback to the user about the error
     }
+    
+
   };
 
   const toggleEditMode = () => {

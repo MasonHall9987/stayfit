@@ -258,7 +258,8 @@ export default function WorkoutPage() {
       <ViewWorkoutModal
     isOpen={isViewWorkoutModalOpen}  // Control visibility
     setIsOpen={setIsViewWorkoutModalOpen}  // Handle closing
-    workoutData={workoutData}  // Pass workout data
+    workoutData={workoutData}
+    onChange={fetchWorkouts}  // Pass workout data
   />
     </div>
   );
