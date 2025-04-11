@@ -12,6 +12,8 @@ export default function ProfilePage() {
   const auth = useAuth();
   const router = useRouter();
   const db = getFirestore();
+  const [userName, setUserName] = useState("");
+
 
   const [isSettingsModalOpen, setisSettingsModalOpen] = useState(false);
   const [isPersonalModalOpen, setisPersonalModalOpen] = useState(false);
@@ -21,11 +23,10 @@ export default function ProfilePage() {
   const [loadingStats, setLoadingStats] = useState(true);
 
   const { currentUser } = auth || {};
-
   useEffect(() => {
     const fetchUserStats = async () => {
       if (!currentUser) return;
-
+  
       try {
         // Fetch workouts
         const workoutsQuery = query(
@@ -34,14 +35,15 @@ export default function ProfilePage() {
         );
         const workoutsSnap = await getDocs(workoutsQuery);
         setWorkoutCount(workoutsSnap.size);
-
-        // Fetch other stats if any (like streaks)
+  
+        // Fetch user info (like name and streak)
         const userDocRef = doc(db, "users", currentUser.uid);
         const userDocSnap = await getDoc(userDocRef);
-
+  
         if (userDocSnap.exists()) {
           const data = userDocSnap.data();
           setCurrentStreak(data.currentStreak ?? 0);
+          setUserName(data.name || "");
         }
       } catch (error) {
         console.error("Error fetching profile stats:", error);
@@ -49,7 +51,7 @@ export default function ProfilePage() {
         setLoadingStats(false);
       }
     };
-
+  
     fetchUserStats();
   }, [currentUser]);
 
@@ -100,7 +102,7 @@ export default function ProfilePage() {
                   </button>
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-white">{currentUser.displayName || currentUser.email}</h1>
+                  <h1 className="text-2xl font-bold text-white">{userName }</h1>
                   <p className="text-gray-400">{currentUser.email}</p>
                 </div>
               </div>
