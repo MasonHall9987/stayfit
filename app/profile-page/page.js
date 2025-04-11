@@ -102,7 +102,7 @@ export default function ProfilePage() {
                   </button>
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-white">{userName }</h1>
+                  <h1 className="text-2xl font-bold text-white">{userName}</h1>
                   <p className="text-gray-400">{currentUser.email}</p>
                 </div>
               </div>
